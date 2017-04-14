@@ -52,16 +52,17 @@ public class PassportInterceptor implements HandlerInterceptor {
         ||loginTicket.getStatus()!=0){
                 return true;
             }
+            // ticket 没问题 将 user 的信息保存在 Hostholder，可以随时访问
+            User user = userDAO.selectById(loginTicketDAO.selectByTicket(ticket).getUserId());
+
+            hostHolder.setUsers(user);
         }
 
-        // ticket 没问题 将 user 的信息保存在 Hostholder，可以随时访问
-        User user = userDAO.selectById(loginTicketDAO.selectByTicket(ticket).getUserId());
 
-        hostHolder.setUsers(user);
 
         return true;
     }
-    // handle 处理完，开始处理
+    // 渲染页面之前
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
 
