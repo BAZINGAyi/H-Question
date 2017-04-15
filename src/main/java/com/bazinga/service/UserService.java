@@ -33,6 +33,10 @@ public class UserService {
         return userDAO.selectById(id);
     }
 
+    public User selectByName(String name) {
+        return userDAO.selectByname(name);
+    }
+
     public Map<String,String> register(String name , String password){
 
         Map<String,String> map = new HashedMap();
