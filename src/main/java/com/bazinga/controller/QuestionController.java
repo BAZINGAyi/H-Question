@@ -2,8 +2,8 @@ package com.bazinga.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bazinga.aspect.LogAspect;
-import com.bazinga.model.HostHolder;
-import com.bazinga.model.Question;
+import com.bazinga.model.*;
+import com.bazinga.service.CommentService;
 import com.bazinga.service.QuestionService;
 import com.bazinga.service.UserService;
 import org.slf4j.Logger;
@@ -14,7 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import util.WendaUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by bazinga on 2017/4/13.
@@ -32,6 +34,9 @@ public class QuestionController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    CommentService commentService;
 
     public static String getJsonString(int code){
         JSONObject jsonObject = new JSONObject();
@@ -77,6 +82,15 @@ public class QuestionController {
         Question question = questionService.selectById(qid);
         model.addAttribute("question",question);
         model.addAttribute("user",userService.getUser(question.getUserId()));
+        List<Comment> commentList = commentService.getCommentsByEntity(question.getId(), EntityType.ENTITY_COMMENT);
+        List<ViewObject> comments = new ArrayList<>();
+        for (Comment comment:commentList){
+            ViewObject vo = new ViewObject();
+            vo.set("comment",comment);
+            vo.set("user",userService.getUser(comment.getUserId()));
+            comments.add(vo);
+        }
+        model.addAttribute("comments",comments);
         return "detail";
     }
 }

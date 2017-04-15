@@ -47,7 +47,9 @@ public class SensitiveService implements InitializingBean{
     }
     // 增加敏感词
     private void addWord(String lineText){
+
         TrieNode trieNode = rootNode;
+
         for(int i = 0; i < lineText.length(); ++i){
 
             Character c = lineText.charAt(i);
@@ -55,7 +57,7 @@ public class SensitiveService implements InitializingBean{
             if(isSymbol(c))
                 continue;
 
-            System.out.println("字符：" + c);
+           // System.out.println("字符：" + c);
 
             TrieNode node = trieNode.getSubNode(c);
 
