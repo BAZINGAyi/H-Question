@@ -22,7 +22,7 @@ import java.util.Map;
 @Service
 public class SensitiveService implements InitializingBean{
 
-    private static final Logger logger= LoggerFactory.getLogger(LogAspect.class);
+    private static final Logger logger= LoggerFactory.getLogger(SensitiveService.class);
 
     private static final String DEFAULT_REPLACEMENT = "*敏感词*";
 

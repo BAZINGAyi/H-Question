@@ -30,7 +30,7 @@ public class H_QuestionConfigureation extends WebMvcConfigurerAdapter {
         registry.addInterceptor(passportInterceptor);
         // 当和用户有关的页面走下面拦截器 顺序2
         registry.addInterceptor(loginRequirementInterceptor)
-        .addPathPatterns("/user/*");
+        .addPathPatterns("/user/*").addPathPatterns("/msg/*");
         registry.addInterceptor(checkLoginInterceptor);
         super.addInterceptors(registry);
     }

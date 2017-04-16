@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bazinga.aspect.LogAspect;
 import com.bazinga.model.*;
 import com.bazinga.service.CommentService;
+import com.bazinga.service.LikeService;
 import com.bazinga.service.QuestionService;
 import com.bazinga.service.UserService;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ import java.util.List;
 @Controller
 public class QuestionController {
 
-    private static final Logger logger= LoggerFactory.getLogger(LogAspect.class);
+    private static final Logger logger= LoggerFactory.getLogger(QuestionController.class);
 
     @Autowired
     QuestionService questionService;
@@ -37,6 +38,9 @@ public class QuestionController {
 
     @Autowired
     CommentService commentService;
+
+    @Autowired
+    LikeService likeService;
 
     public static String getJsonString(int code){
         JSONObject jsonObject = new JSONObject();
@@ -87,6 +91,13 @@ public class QuestionController {
         for (Comment comment:commentList){
             ViewObject vo = new ViewObject();
             vo.set("comment",comment);
+            if (hostHolder.getUsers() == null) {
+                vo.set("liked", 0);
+            } else {
+                vo.set("liked", likeService.getLikeStatus(hostHolder.getUsers().getId(), EntityType.ENTITY_COMMENT, comment.getId()));
+            }
+
+            vo.set("likeCount", likeService.getLikeCount(EntityType.ENTITY_COMMENT, comment.getId()));
             vo.set("user",userService.getUser(comment.getUserId()));
             comments.add(vo);
         }

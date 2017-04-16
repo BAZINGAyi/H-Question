@@ -32,7 +32,7 @@ public class CommentController {
     @Autowired
     QuestionService questionService;
 
-    private static final Logger logger= LoggerFactory.getLogger(LogAspect.class);
+    private static final Logger logger= LoggerFactory.getLogger(CommentController.class);
 
 
     @RequestMapping(path = {"/addComment"},method ={RequestMethod.POST})

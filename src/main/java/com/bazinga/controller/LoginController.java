@@ -27,7 +27,7 @@ public class LoginController {
     @Autowired
     UserService userService;
 
-    private static final Logger logger= LoggerFactory.getLogger(LogAspect.class);
+    private static final Logger logger= LoggerFactory.getLogger(LoginController.class);
 
 // 注册
     @RequestMapping(path = {"/reg/"}, method = {RequestMethod.POST})
