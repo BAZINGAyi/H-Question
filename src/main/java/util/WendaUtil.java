@@ -14,6 +14,8 @@ public class WendaUtil {
 
     public static final int Anonymous_USERID = 3;
 
+    public static final int SYSTEM_USERID = 4;
+
     private static final Logger logger = LoggerFactory.getLogger(WendaUtil.class);
 
     public static String MD5(String key) {

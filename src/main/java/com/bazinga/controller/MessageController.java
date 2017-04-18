@@ -76,7 +76,7 @@ public class MessageController {
             for (Message msg : conversationList) {
                 ViewObject vo = new ViewObject();
                 vo.set("message", msg);
-                // 有我发给别人的消息和别人发给我的消息，但业务的要求是显示发给别人的消息
+                // 有我发给别人的消息和别人发给我的消息，但业务的要求是显示来自别人的消息
                 int targetId = msg.getFromId() == localUserId ? msg.getToId() : msg.getFromId();
                 User user = userService.getUser(targetId);
                 vo.set("user", user);
@@ -113,6 +113,7 @@ public class MessageController {
                 }
                 else
                     vo.set("fromOther",0);
+
                 vo.set("headUrl", user.getHeadUrl());
                 vo.set("userId", user.getId());
                 messages.add(vo);
