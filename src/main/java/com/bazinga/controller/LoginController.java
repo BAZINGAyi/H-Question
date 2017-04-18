@@ -1,6 +1,9 @@
 package com.bazinga.controller;
 
 import com.bazinga.aspect.LogAspect;
+import com.bazinga.async.EventModel;
+import com.bazinga.async.EventProducer;
+import com.bazinga.async.EventType;
 import com.bazinga.model.ViewObject;
 import com.bazinga.service.UserService;
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import util.WendaUtil;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -24,8 +28,12 @@ import java.util.Map;
  */
 @Controller
 public class LoginController {
+
     @Autowired
     UserService userService;
+
+    @Autowired
+    EventProducer eventProducer;
 
     private static final Logger logger= LoggerFactory.getLogger(LoginController.class);
 
@@ -110,6 +118,12 @@ public class LoginController {
                 }
 
                 response.addCookie(cookie);
+
+                //  下面为发送邮件的部分
+               /** eventProducer.fireEvent(new EventModel(EventType.LOGIN)
+                        .setExt("username", username).setExt("email", "xxxx@qq.com")
+                        .setActorId(WendaUtil.SYSTEM_USERID));**/
+
                 // 如果包含 next 值证明用户是从别的页面跳过来的，再跳回去
                 if (StringUtils.isNotBlank(next)) {
                     return "redirect:" + next;
