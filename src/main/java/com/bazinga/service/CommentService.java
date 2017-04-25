@@ -19,6 +19,8 @@ public class CommentService {
     @Autowired
     SensitiveService sensitiveService;
 
+    // 得到问题的评论 entityId就是问题的Id entityType就是问题的评论类型
+    // 得到评论的评论 entityId就是评论的Id rntityType就是评论的评论类型
     public List<Comment> getCommentsByEntity(int entityId,
                                              int entityType){
         return commentDAO.selectCommentByEntity(entityId,entityType);
@@ -28,6 +30,10 @@ public class CommentService {
         comment.setContent(HtmlUtils.htmlEscape(comment.getContent()));
         comment.setContent(sensitiveService.filter(comment.getContent()));
         return commentDAO.addComment(comment);
+    }
+
+    public int getUserCommentCount(int userId) {
+        return commentDAO.getUserCommentCount(userId);
     }
 
     public Comment getCommentById(int id) {

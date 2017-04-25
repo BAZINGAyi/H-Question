@@ -18,7 +18,7 @@ public class LogAspect {
 
     private static final Logger logger= LoggerFactory.getLogger(LogAspect.class);
             // 第一个 * 是返回值
-    @Before("execution(* com.bazinga.controller.IndexController.*(..))")
+    @Before("execution(* com.bazinga.controller.HomeController.*(..))")
     public void beforeMethod(JoinPoint joinPoint){
 
         StringBuilder sb = new StringBuilder();
@@ -28,7 +28,7 @@ public class LogAspect {
         }
         logger.info("brefore method"+sb.toString());
     }
-    @After("execution(* com.bazinga.controller.IndexController.*(..))")
+    @After("execution(* com.bazinga.controller.HomeController.*(..))")
     public void afterMethod(){
 
         logger.info("after method");

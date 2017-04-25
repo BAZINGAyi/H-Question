@@ -3,10 +3,7 @@ package com.bazinga.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.bazinga.aspect.LogAspect;
 import com.bazinga.model.*;
-import com.bazinga.service.CommentService;
-import com.bazinga.service.LikeService;
-import com.bazinga.service.QuestionService;
-import com.bazinga.service.UserService;
+import com.bazinga.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +38,10 @@ public class QuestionController {
 
     @Autowired
     LikeService likeService;
+
+
+    @Autowired
+    FollowService followService;
 
     public static String getJsonString(int code){
         JSONObject jsonObject = new JSONObject();
@@ -102,6 +103,27 @@ public class QuestionController {
             comments.add(vo);
         }
         model.addAttribute("comments",comments);
+
+        List<ViewObject> followUsers = new ArrayList<ViewObject>();
+        // 获取关注的用户信息
+        List<Integer> users = followService.getFollowers(EntityType.ENTITY_QUESTION, qid, 20);
+        for (Integer userId : users) {
+            ViewObject vo = new ViewObject();
+            User u = userService.getUser(userId);
+            if (u == null) {
+                continue;
+            }
+            vo.set("name", u.getName());
+            vo.set("headUrl", u.getHeadUrl());
+            vo.set("id", u.getId());
+            followUsers.add(vo);
+        }
+        model.addAttribute("followUsers", followUsers);
+        if (hostHolder.getUsers() != null) {
+            model.addAttribute("followed", followService.isFollower(hostHolder.getUsers().getId(), EntityType.ENTITY_QUESTION, qid));
+        } else {
+            model.addAttribute("followed", false);
+        }
         return "detail";
     }
 }

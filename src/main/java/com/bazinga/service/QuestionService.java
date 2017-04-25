@@ -21,6 +21,7 @@ public class QuestionService {
     @Autowired
     SensitiveService sensitiveService;
 
+
     public List<Question> getLatestQuestions(int userId,int offset, int limit ){
 
         return questionDAO.selectLatestQuestions(userId,offset,limit);

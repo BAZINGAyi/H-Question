@@ -7,8 +7,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Transaction;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 如果Application类所在的包为：
@@ -82,6 +85,7 @@ public class RedisService implements InitializingBean{
         return 0;
     }
 
+    // 这个key是否在集合里存在
     public boolean sismember(String key,String value){
         Jedis jedis = null;
         try{
@@ -97,6 +101,7 @@ public class RedisService implements InitializingBean{
         return false;
     }
 
+    // 在 list 的尾部取走一个元素
     public List<String> brpop(int timeout, String key) {
         Jedis jedis = null;
         try {
@@ -112,6 +117,7 @@ public class RedisService implements InitializingBean{
         return null;
     }
 
+    // 在 list 的头插入
     public long lpush(String key, String value) {
         Jedis jedis = null;
         try {
@@ -127,5 +133,135 @@ public class RedisService implements InitializingBean{
         return 0;
     }
 
+    public Jedis getJedis() {
+        return jedisPool.getResource();
+    }
+
+    /**
+     *  Redis 的事务相关 开启多个事件的执行
+     * @param jedis
+     * @return
+     */
+
+    public Transaction multi(Jedis jedis) {
+        try {
+            return jedis.multi();
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+        }
+        return null;
+    }
+
+    /**
+     * 事务的执行
+     * @param tx
+     * @param jedis
+     * @return
+     */
+
+    public List<Object> exec(Transaction tx, Jedis jedis) {
+        try {
+            return tx.exec();
+        } catch (Exception e) {
+            logger.error("事务执行发生异常" + e.getMessage());
+            tx.discard();
+        } finally {
+            if (tx != null) {
+                try {
+                    tx.close();
+                } catch (IOException e) {
+                    logger.error("事务执行发生异常" + e.getMessage());
+                }
+            }
+
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 得到相应类型key的所有值
+     * @param key
+     * @param start
+     * @param end
+     * @return
+     */
+    public Set<String> zrange(String key, int start, int end) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.zrange(key, start, end);
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 注意这里取的是反向的因为按照时间排序，最新的在最后面
+     * @param key
+     * @param start
+     * @param end
+     * @return
+     */
+
+    public Set<String> zrevrange(String key, int start, int end) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.zrevrange(key, start, end);
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 得到某个 key 的集合的总数量
+     * @param key
+     * @return
+     */
+
+    public long zcard(String key) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.zcard(key);
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return 0;
+    }
+
+    // 如果这个 key 在集合中的 key 为空，那么证明这个集合中没有这个 key
+    public Double zscore(String key, String member) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.zscore(key, member);
+        } catch (Exception e) {
+            logger.error("发生异常" + e.getMessage());
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
+    }
 
 }
