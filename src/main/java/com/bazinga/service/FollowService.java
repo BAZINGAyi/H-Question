@@ -61,14 +61,14 @@ public class FollowService {
         List<Object> ret = redisService.exec(tx, jedis);
         return ret.size() == 2 && (Long) ret.get(0) > 0 && (Long) ret.get(1) > 0;
     }
-
+    // 用于问题页展示关注的用户信息 10 个
     public List<Integer> getFollowers(int entityType, int entityId, int count) {
         String followerKey = RedisKeyUtil.getFollowerKey(entityType, entityId);
         return getIdsFromSet(redisService.zrevrange(followerKey, 0, count));
     }
 
     /**
-     * 得到粉丝
+     * 得到粉丝 用于展示当前的粉丝页
      * @param entityType
      * @param entityId
      * @param offset  用于分页
@@ -78,6 +78,16 @@ public class FollowService {
     public List<Integer> getFollowers(int entityType, int entityId, int offset, int count) {
         String followerKey = RedisKeyUtil.getFollowerKey(entityType, entityId);
         return getIdsFromSet(redisService.zrevrange(followerKey, offset, offset+count));
+    }
+
+    public List<Integer> getFollowees(int userId, int entityType, int count) {
+        String followeeKey = RedisKeyUtil.getFolloweeKey(userId, entityType);
+        return getIdsFromSet(redisService.zrevrange(followeeKey, 0, count));
+    }
+
+    public List<Integer> getFollowees(int userId, int entityType, int offset, int count) {
+        String followeeKey = RedisKeyUtil.getFolloweeKey(userId, entityType);
+        return getIdsFromSet(redisService.zrevrange(followeeKey, offset, offset+count));
     }
 
     // 将集合转换成 int

@@ -138,7 +138,7 @@ public class FollowController {
 
     @RequestMapping(path = {"/user/{uid}/followees"}, method = {RequestMethod.GET})
     public String followees(Model model, @PathVariable("uid") int userId) {
-        List<Integer> followeeIds = followService.getFollowers(userId, EntityType.ENTITY_USER, 0, 10);
+        List<Integer> followeeIds = followService.getFollowees(userId, EntityType.ENTITY_USER, 0, 10);
 
         if (hostHolder.getUsers() != null) {
             model.addAttribute("followees", getUsersInfo(hostHolder.getUsers().getId(), followeeIds));
