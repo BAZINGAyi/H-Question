@@ -18,6 +18,7 @@ public class RedisKeyUtil {
     //关注对象
     private static String BIZ_FOLLOWEE = "FOLLOWEE";
 
+    // TIMELINE 每一个人都有自己的模版
     private static String BIZ_TIMELINE = "TIMELINE";
 
     public static String getLikeKey(int entityType, int entityId) {

@@ -44,6 +44,16 @@ public interface FeedDAO {
                                );
 
     /**
+     * 查询一个用户的所有feeds
+     * @param userId
+     * @return
+     */
+    @Select({"select ", SELECT_FIELDS," from ",TABLE_NAME," where user_id = #{userId}"})
+
+    List<Feed> selectSingleUserFeeds(@Param("userId") int userId
+    );
+
+    /**
      * 拉模式获取新鲜事
      * @param Id
      * @return

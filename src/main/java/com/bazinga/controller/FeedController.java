@@ -5,11 +5,13 @@ import com.bazinga.model.Feed;
 import com.bazinga.model.HostHolder;
 import com.bazinga.service.FeedService;
 import com.bazinga.service.FollowService;
+import com.bazinga.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import util.RedisKeyUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,9 @@ public class FeedController {
     @Autowired
     FollowService followService;
 
+    @Autowired
+    RedisService redisService;
+
     // 拉的模式
     @RequestMapping(path = {"/pullfeeds"},method = {RequestMethod.GET})
     public String getPullFeeds(Model model){
@@ -47,6 +52,25 @@ public class FeedController {
 
         model.addAttribute("feeds",feeds);
 
+        return "feeds";
+    }
+
+    // 推的模式
+    @RequestMapping(path = {"/pushfeeds"},method = {RequestMethod.GET})
+    public String getPushFeeds(Model model){
+        int localUserId = hostHolder.getUsers() == null ? 0 : hostHolder.getUsers().getId();
+        List<String> feedIds = redisService.lrange(RedisKeyUtil.getTimelineKey(localUserId),
+                0,10);
+        List<Feed> feeds = new ArrayList<>();
+        // 将发生的事件取出来
+        for (String feedId:feedIds){
+            Feed feed = feedService.getById(Integer.valueOf(feedId));
+            if(feed == null)
+                continue;
+            feeds.add(feed);
+        }
+
+        model.addAttribute("feeds",feeds);
         return "feeds";
     }
 }

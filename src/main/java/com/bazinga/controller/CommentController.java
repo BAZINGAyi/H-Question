@@ -1,6 +1,10 @@
 package com.bazinga.controller;
 
 import com.bazinga.aspect.LogAspect;
+import com.bazinga.async.EventHandler;
+import com.bazinga.async.EventModel;
+import com.bazinga.async.EventProducer;
+import com.bazinga.async.EventType;
 import com.bazinga.model.Comment;
 import com.bazinga.model.EntityType;
 import com.bazinga.model.HostHolder;
@@ -32,6 +36,9 @@ public class CommentController {
     @Autowired
     QuestionService questionService;
 
+    @Autowired
+    EventProducer eventProducer;
+
     private static final Logger logger= LoggerFactory.getLogger(CommentController.class);
 
 
@@ -54,6 +61,11 @@ public class CommentController {
             // 这块应该使用数据库的事务操作
             int count = commentService.getCommentCount(comment.getEntityId(),comment.getEntityType());
             questionService.updateCommentCount(questionId,count);
+
+            eventProducer.fireEvent(new EventModel(EventType.COMMENT)
+                    .setActorId(comment.getUserId())
+                    .setEntityId(questionId));
+
         }catch (Exception e){
             logger.error("增加评论失败" + e.getMessage());
         }

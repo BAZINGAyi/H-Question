@@ -1,5 +1,6 @@
 package com.bazinga.service;
 
+import com.bazinga.async.EventType;
 import com.bazinga.dao.FeedDAO;
 import com.bazinga.model.Feed;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class FeedService {
     // 推模式
     public Feed getById(int id){
         return feedDAO.getFeedById(id);
+    }
+
+    public List<Feed> getUserFeeds(int userId){
+        // 发生事件的类型
+        return feedDAO.selectSingleUserFeeds(userId);
     }
 
 }
