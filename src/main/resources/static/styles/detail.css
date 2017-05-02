@@ -1593,16 +1593,16 @@ html.no-touchevents .meta-item:hover .z-icon-comment {
 .zg-btn-blue {
     color:#fff!important;
     /*text-shadow:0 -1px 0 rgba(0,0,0,.5);*/
-    background:#25bb9b;
-    background:-webkit-linear-gradient(top,#25bb9b,#00B091);
-    background:linear-gradient(to bottom,#25bb9b,#00B091);
-    border:1px solid #25bb9b;
+    background:rgb(11,105,199);
+    background:-webkit-linear-gradient(top,rgb(11,105,199),rgb(11,105,199));
+    background:linear-gradient(to bottom,rgb(11,105,199),rgb(11,105,199));
+    border:1px solid rgb(11,105,199);
     box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 1px 0 rgba(0,0,0,.2)
 }
 .zg-btn-blue:active {
-    background:#25bb9b;
-    background:-webkit-linear-gradient(top,#25bb9b,#00B091);
-    background:linear-gradient(to bottom,#25bb9b,#00B091);
+    background:rgb(13,118,225);
+    background:-webkit-linear-gradient(top,rgb(13,118,225),rgb(13,118,225));
+    background:linear-gradient(to bottom,rgb(13,118,225),rgb(13,118,225));
     box-shadow:0 1px 2px rgba(255,255,255,.15) inset
 }
 .zg-btn-red {
@@ -7243,10 +7243,10 @@ html.modal-open.flexbox .modal-wrapper .modal-dialog.centered {
     margin:-1px -1px 0;
     padding:10px 15px;
     line-height:14px;
-    background:#25bb9b;
-    background:-webkit-linear-gradient(top,#25bb9b,#00B091);
-    background:linear-gradient(to bottom,#25bb9b,#00B091);
-    border:1px solid #00B091;
+    background:rgb(11,105,199);
+    background:-webkit-linear-gradient(top,rgb(11,105,199),rgb(11,105,199));
+    background:linear-gradient(to bottom,rgb(11,105,199),rgb(11,105,199));
+    border:1px solid rgb(11,105,199);
     border-radius:6px 6px 0 0;
     box-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 1px 1px rgba(0,0,0,.2)
 }

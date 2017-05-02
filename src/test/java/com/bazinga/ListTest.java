@@ -12,7 +12,7 @@ import java.util.List;
 public class ListTest {
     public static void main(String[] args){
 
-        List<EventType> list = Arrays.asList(EventType.LIKE,EventType.COMMENT);
+        List<EventType> list = Arrays.asList(EventType.LIKE,EventType.COMMENT_OTHER);
         for(EventType type:list){
             System.out.println(type.getValue());
         }

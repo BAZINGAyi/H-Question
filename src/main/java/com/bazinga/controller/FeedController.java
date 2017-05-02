@@ -46,6 +46,7 @@ public class FeedController {
             // 查找我关注的人
             followees = followService.getFollowees(localUserId, EntityType.ENTITY_USER,
                     Integer.MAX_VALUE);
+            // 加上查找我关注的问题
         }
 
         List<Feed> feeds = feedService.getUserFeeds(Integer.MAX_VALUE,followees,10);

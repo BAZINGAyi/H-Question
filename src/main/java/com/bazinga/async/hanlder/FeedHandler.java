@@ -42,8 +42,10 @@ public class FeedHandler implements EventHandler {
         map.put("userId",String.valueOf(actor.getId()));
         map.put("userHead",actor.getHeadUrl());
         map.put("userName",actor.getName());
-        if(eventModel.getType() == EventType.COMMENT
-                || (eventModel.getEntityType() == EntityType.ENTITY_QUESTION
+
+        if(eventModel.getType() == EventType.COMMENT_OTHER||
+                (eventModel.getType() == EventType.COMMENT_MY) ||
+                (eventModel.getEntityType() == EntityType.ENTITY_QUESTION
                     && eventModel.getType() == EventType.FOLLOW)){
             Question question = questionService.selectById(eventModel.getEntityId());
             if (question == null)
@@ -54,6 +56,10 @@ public class FeedHandler implements EventHandler {
         }
         return null;
     }
+
+
+
+
 
     @Override
     public void doHandle(EventModel model) {
@@ -66,19 +72,20 @@ public class FeedHandler implements EventHandler {
             return;
         feedService.addFeed(feed);
 
-        // 上面是推的过程
+        // 上面是拉的过程
 
-        // 下面是拉的过程
+        // 下面是推的过程
         // 给发生该事件的所有粉丝推
-        List<Integer> followers = followService.getFollowers(EntityType.ENTITY_USER,model.getActorId(),
-                Integer.MAX_VALUE);
-        // 0 代表系统，当未登录查看的系统的队列
-        followers.add(0);
-        for (int follower : followers){
-            // 在触发事件的用户的所有粉丝中，加入触发的事件
-            String timeLineKey = RedisKeyUtil.getTimelineKey(follower);
-            redisService.lpush(timeLineKey,String.valueOf(feed.getId()));
-        }
+//        List<Integer> followers = followService.getFollowers(EntityType.ENTITY_USER,model.getActorId(),
+//                Integer.MAX_VALUE);
+//        // 0 代表系统，当未登录查看的系统的队列
+//        followers.add(0);
+//        for (int follower : followers){
+//            // 在触发事件的用户的所有粉丝中，加入触发的事件
+//            String timeLineKey = RedisKeyUtil.getTimelineKey(follower);
+//            redisService.lpush(timeLineKey,String.valueOf(feed.getId()));
+//        }
+        checkEventType(model,feed.getId());
 
 
     }
@@ -86,6 +93,56 @@ public class FeedHandler implements EventHandler {
     @Override
     public List<EventType> getSupportEventTypes() {
         return Arrays.asList(new EventType[]{EventType.FOLLOW,
-                EventType.COMMENT});
+                EventType.COMMENT_OTHER,EventType.COMMENT_MY});
     }
+
+
+    public Map checkEventType(EventModel eventModel,int feedId){
+
+        EventType e = eventModel.getType();
+        switch (e) {
+            case FOLLOW: {
+                if (eventModel.getEntityType() == EntityType.ENTITY_QUESTION) {
+                    List<Integer> followers = followService.getFollowers(EntityType.ENTITY_USER, eventModel.getActorId(),
+                            Integer.MAX_VALUE);
+
+                    // 0 代表系统，当未登录查看的系统的队列
+                    followers.add(0);
+                    for (int follower : followers) {
+                        // 在触发事件的用户的所有粉丝中，加入触发的事件
+                        String timeLineKey = RedisKeyUtil.getTimelineKey(follower);
+                        redisService.lpush(timeLineKey, String.valueOf(feedId));
+                    }
+                }
+            }break;
+
+            case COMMENT_OTHER: {
+                List<Integer> followers = followService.getFollowers(EntityType.ENTITY_USER, eventModel.getActorId(),
+                        Integer.MAX_VALUE);
+                // 0 代表系统，当未登录查看的系统的队列
+                followers.add(0);
+                for (int follower : followers) {
+                    // 在触发事件的用户的所有粉丝中，加入触发的事件
+                    String timeLineKey = RedisKeyUtil.getTimelineKey(follower);
+                    redisService.lpush(timeLineKey, String.valueOf(feedId));
+                }
+            }
+            break;
+
+            case COMMENT_MY: {
+                // 给关注该问题的用户发送消息
+                List<Integer> followers = followService.getFollowers(EntityType.ENTITY_QUESTION,
+                        eventModel.getEntityId(), Integer.MAX_VALUE);
+                // 0 代表系统，当未登录查看的系统的队列
+                followers.add(0);
+                for (int follower : followers) {
+                    String timeLineKey = RedisKeyUtil.getTimelineKey(follower);
+                    redisService.lpush(timeLineKey, String.valueOf(feedId));
+                }
+            }break;
+        }
+        return null;
+    }
+
+
 }

@@ -62,7 +62,13 @@ public class CommentController {
             int count = commentService.getCommentCount(comment.getEntityId(),comment.getEntityType());
             questionService.updateCommentCount(questionId,count);
 
-            eventProducer.fireEvent(new EventModel(EventType.COMMENT)
+            // 给发表该评论的用户的粉丝发送新鲜事
+            eventProducer.fireEvent(new EventModel(EventType.COMMENT_OTHER)
+                    .setActorId(comment.getUserId())
+                    .setEntityId(questionId));
+
+            // 给关注该问题的用户发表评论
+            eventProducer.fireEvent(new EventModel(EventType.COMMENT_MY)
                     .setActorId(comment.getUserId())
                     .setEntityId(questionId));
 

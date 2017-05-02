@@ -87,7 +87,7 @@ public class QuestionController {
         Question question = questionService.selectById(qid);
         model.addAttribute("question",question);
         model.addAttribute("user",userService.getUser(question.getUserId()));
-        List<Comment> commentList = commentService.getCommentsByEntity(question.getId(), EntityType.ENTITY_COMMENT);
+        List<Comment> commentList = commentService.getCommentsByEntity(question.getId(), EntityType.ENTITY_QUESTION);
         List<ViewObject> comments = new ArrayList<>();
         for (Comment comment:commentList){
             ViewObject vo = new ViewObject();
