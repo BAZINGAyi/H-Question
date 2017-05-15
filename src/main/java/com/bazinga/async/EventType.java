@@ -6,12 +6,14 @@ package com.bazinga.async;
 // 该类型 用于异步事件处理的判断
 public enum EventType {
     LIKE(0),
-    COMMENT_OTHER(1),
+    // 给发表该评论的用户的粉丝发送新鲜事
+    COMMENT_MyFans(1),
     LOGIN(2),
     MAIL(3),
     FOLLOW(4),
     UNFOLLOW(5),
-    COMMENT_MY(6),;
+    // 给关注该问题的用户发表评论
+    COMMENT_Focus_Question(6),;
 
     private int value;
 

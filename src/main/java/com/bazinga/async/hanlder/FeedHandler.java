@@ -43,8 +43,8 @@ public class FeedHandler implements EventHandler {
         map.put("userHead",actor.getHeadUrl());
         map.put("userName",actor.getName());
 
-        if(eventModel.getType() == EventType.COMMENT_OTHER||
-                (eventModel.getType() == EventType.COMMENT_MY) ||
+        if(eventModel.getType() == EventType.COMMENT_MyFans||
+                (eventModel.getType() == EventType.COMMENT_Focus_Question) ||
                 (eventModel.getEntityType() == EntityType.ENTITY_QUESTION
                     && eventModel.getType() == EventType.FOLLOW)){
             Question question = questionService.selectById(eventModel.getEntityId());
@@ -93,7 +93,7 @@ public class FeedHandler implements EventHandler {
     @Override
     public List<EventType> getSupportEventTypes() {
         return Arrays.asList(new EventType[]{EventType.FOLLOW,
-                EventType.COMMENT_OTHER,EventType.COMMENT_MY});
+                EventType.COMMENT_MyFans,EventType.COMMENT_Focus_Question});
     }
 
 
@@ -116,7 +116,7 @@ public class FeedHandler implements EventHandler {
                 }
             }break;
 
-            case COMMENT_OTHER: {
+            case COMMENT_MyFans: {
                 List<Integer> followers = followService.getFollowers(EntityType.ENTITY_USER, eventModel.getActorId(),
                         Integer.MAX_VALUE);
                 // 0 代表系统，当未登录查看的系统的队列
@@ -129,7 +129,7 @@ public class FeedHandler implements EventHandler {
             }
             break;
 
-            case COMMENT_MY: {
+            case COMMENT_Focus_Question: {
                 // 给关注该问题的用户发送消息
                 List<Integer> followers = followService.getFollowers(EntityType.ENTITY_QUESTION,
                         eventModel.getEntityId(), Integer.MAX_VALUE);
@@ -146,3 +146,4 @@ public class FeedHandler implements EventHandler {
 
 
 }
+

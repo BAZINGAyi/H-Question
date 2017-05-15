@@ -20,7 +20,7 @@ public class CommentService {
     SensitiveService sensitiveService;
 
     // 得到问题的评论 entityId就是问题的Id entityType就是问题的评论类型
-    // 得到评论的评论 entityId就是评论的Id rntityType就是评论的评论类型
+    // 得到评论的评论 entityId就是评论的Id entityType就是评论的评论类型
     public List<Comment> getCommentsByEntity(int entityId,
                                              int entityType){
         return commentDAO.selectCommentByEntity(entityId,entityType);

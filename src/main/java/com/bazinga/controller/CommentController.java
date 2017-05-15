@@ -56,19 +56,19 @@ public class CommentController {
                 comment.setUserId(WendaUtil.Anonymous_USERID);
             }
             comment.setEntityId(questionId);
-            comment.setEntityType(EntityType.ENTITY_COMMENT);
+            comment.setEntityType(EntityType.ENTITY_QUESTION);
             commentService.addComment(comment);
             // 这块应该使用数据库的事务操作
             int count = commentService.getCommentCount(comment.getEntityId(),comment.getEntityType());
             questionService.updateCommentCount(questionId,count);
 
             // 给发表该评论的用户的粉丝发送新鲜事
-            eventProducer.fireEvent(new EventModel(EventType.COMMENT_OTHER)
+            eventProducer.fireEvent(new EventModel(EventType.COMMENT_MyFans)
                     .setActorId(comment.getUserId())
                     .setEntityId(questionId));
 
             // 给关注该问题的用户发表评论
-            eventProducer.fireEvent(new EventModel(EventType.COMMENT_MY)
+            eventProducer.fireEvent(new EventModel(EventType.COMMENT_Focus_Question)
                     .setActorId(comment.getUserId())
                     .setEntityId(questionId));
 
